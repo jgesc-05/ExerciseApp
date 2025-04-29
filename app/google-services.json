@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "405914272176",
+    "project_id": "exerciseapp-f9f81",
+    "storage_bucket": "exerciseapp-f9f81.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405914272176:android:815d549a19e52358e41675",
+        "android_client_info": {
+          "package_name": "me.juanescobar.appejercicios"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDK5jgN8w8yqPgPARyRY_2t4aVuqNac45U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
