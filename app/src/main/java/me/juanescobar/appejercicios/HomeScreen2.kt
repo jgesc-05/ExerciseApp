@@ -81,7 +81,7 @@ fun HomeScreen2(){
                         .background(Color.LightGray)
                 )
                 Box(
-                    modifier = Modifier
+                    modifier   = Modifier
                         .weight(0.5f)
                         .fillMaxHeight()
                         .background(Color.Black)
