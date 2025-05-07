@@ -81,7 +81,6 @@ fun RegisterScreen(myNavController : NavController) {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
-                .fillMaxSize()
                 .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center

@@ -4,9 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import me.juanescobar.appejercicios.ui.theme.AppEjerciciosTheme
 
 class MainActivity : ComponentActivity() {
@@ -15,31 +19,31 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AppEjerciciosTheme {
-                val myNavController = rememberNavController()
-                val myStartDestination = "login"
-
-                NavHost(
-                    navController = myNavController,
-                    startDestination = myStartDestination
-                ){
-                    composable("login"){
-                        LoginScreen(myNavController)
-                    }
-
-                    composable("register"){
-                        RegisterScreen(myNavController)
-                    }
-
-                    composable("survey"){
-                        SurveyScreen(myNavController)
-                    }
-
-                    composable("home") {
-                        HomeScreen(myNavController)
-                    }
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Greeting(
+                        name = "Android",
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
             }
+
             }
        }
+
     }
+
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
 }
 
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    AppEjerciciosTheme {
+        Greeting("Android")
+    }
+}
