@@ -44,11 +44,51 @@ class MainActivity : ComponentActivity() {
                     composable("home") {
                         HomeScreen2(myNavController)
                     }
+
+                    composable("exercisesList") {
+                        ExerciseScreen(myNavController)
+                    }
+
+                    composable("sentadillaExplain") {
+                        SentadillaExplainScreen(myNavController)
+                    }
+
+                    composable("sentadillaAi") {
+                        SentadillaAiScreen(myNavController)
+                    }
+
+                    composable("flexionExplain"){
+                        FlexionExplainScreen(myNavController)
+                    }
+
+                    composable("flexionAi") {
+                        FlexionAiScreen(myNavController)
+                    }
+
+                    composable("pressExplain") {
+                        PressExplainScreen(myNavController)
+                    }
+
+                    composable("pressAi") {
+                        PressAiScreen(myNavController)
+                     }
+
+                     composable("zancadaExplain") {
+                        ZancadaExplainScreen(myNavController)
+
+                      }
+
+                      composable("zancadaAi") {
+                        ZancadaAiScreen(myNavController)
+                      }
+
+
+
                 }
             }
 
         }
     }
-
 }
+
 

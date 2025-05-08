@@ -8,6 +8,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
 
 data class ExerciseCategory(
     val name: String,
@@ -26,15 +30,10 @@ data class ExerciseCategory(
 )
 
 @Composable
-fun ExerciseScreen() {
+fun ExerciseScreen(myNavController: NavController) {
     val categories = listOf(
-        ExerciseCategory("Piernas y glúteos", R.drawable.sharp_tibia_alt_24, listOf("Sentadillas", "Zancadas", "Peso muerto rumano")),
-        ExerciseCategory("Pecho", R.drawable.rounded_rib_cage_24, listOf("Flexiones", "Press de pecho", "Aperturas de pecho")),
-        ExerciseCategory("Espalda", R.drawable.baseline_scuba_diving_24, listOf("Remo con mancuernas", "Jalón al pecho", "Superman")),
-        ExerciseCategory("Abdomen/Core", R.drawable.baseline_heart_broken_24, listOf("Crunches", "Plancha", "Mountain climbers")),
-        ExerciseCategory("Hombros", R.drawable.baseline_person_24, listOf("Elevaciones laterales", "Press militar", "Pájaros")),
-        ExerciseCategory("Brazos", R.drawable.sharp_wrist_24, listOf("Curl de bíceps", "Fondos de tríceps", "Curl martillo")),
-        ExerciseCategory("Cardio y funcionales", R.drawable.baseline_diversity_1_24, listOf("Jumping jacks", "Burpees", "High knees"))
+        ExerciseCategory("Piernas y glúteos", R.drawable.sharp_tibia_alt_24, listOf("Sentadillas", "Zancadas")),
+        ExerciseCategory("Pecho", R.drawable.rounded_rib_cage_24, listOf("Flexiones", "Press de pecho")),
     )
 
     var selectedCategory by remember { mutableStateOf<ExerciseCategory?>(null) }
@@ -47,17 +46,18 @@ fun ExerciseScreen() {
                 .fillMaxSize()
                 .background(Color.White)
                 .padding(16.dp)
+                .padding(vertical = 90.dp)
         ) {
             // Encabezado
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Inicio", color = Color(0xFFF85F6A), fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text("Ejercicios", fontSize = 16.sp)
             }
 
             Spacer(modifier = Modifier.height(16.dp))
+
+            //Abraham, por favor ver como implementar el Scaffold acá para la navegación de cajón, ya que esta pantalla quedaría desconectada
 
             // Search bar con ícono
             OutlinedTextField(
@@ -122,9 +122,9 @@ fun ExerciseScreen() {
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                IconButton(onClick = { selectedCategory = null }) {
+                IconButton(onClick = { myNavController.navigate("exercisesList") }) {
                     Icon(
-                        painter = painterResource(id = R.drawable.baseline_settings_backup_restore_24),
+                        imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "Volver",
                         tint = Color(0xFFF85F6A)
                     )
@@ -156,8 +156,4 @@ fun ExerciseScreen() {
     }
 }
 
-@Preview
-@Composable
-fun PreviewExerciseScreen() {
-    ExerciseScreen()
-}
+

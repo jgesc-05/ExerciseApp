@@ -58,7 +58,8 @@ fun HomeScreen2(myNavController: NavController){
                 horizontalArrangement = Arrangement.Start
             ){
                 //boton para desplegar el menu
-                IconButton(onClick = { }) {
+                //temporalmente para ver la pantalla de ejercicios
+                IconButton(onClick = { myNavController.navigate("exercisesList") }) {
                     Icon(
                         Icons.Default.Menu,
                         contentDescription = null,
