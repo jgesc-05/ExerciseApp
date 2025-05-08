@@ -42,7 +42,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable("home") {
-                        HomeScreen(myNavController)
+                        HomeScreen2(myNavController)
                     }
                 }
             }

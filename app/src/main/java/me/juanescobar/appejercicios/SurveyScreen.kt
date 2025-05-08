@@ -33,6 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
+
+//FALTANTE: INTEGRACIÓN DE FIREBASE Y BY REMEMBER PARA LOS CAMPOS DE TEXTO, ADEMAS DE LO MENCIONADO ABAJO
+
+
 @Composable
 fun SurveyScreen(myNavController: NavController) {
     Scaffold { innerPadding ->
