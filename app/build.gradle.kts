@@ -59,6 +59,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.navigation.compose)
-    implementation(platform("com.google.firebase:firebase-bom:33.13.0"))
+    implementation(libs.firebase.bom)
     implementation (libs.androidx.material.icons.extended)
+    implementation (libs.pose.detection)
+    implementation(libs.coil.compose)
+    implementation (libs.pose.detection.accurate)
 }

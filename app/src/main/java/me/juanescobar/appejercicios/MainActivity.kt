@@ -57,6 +57,8 @@ class MainActivity : ComponentActivity() {
                         SentadillaAiScreen(myNavController)
                     }
 
+
+
                     composable("flexionExplain"){
                         FlexionExplainScreen(myNavController)
                     }
@@ -69,9 +71,13 @@ class MainActivity : ComponentActivity() {
                         PressExplainScreen(myNavController)
                     }
 
+
                     composable("pressAi") {
                         PressAiScreen(myNavController)
                      }
+
+
+
 
                      composable("zancadaExplain") {
                         ZancadaExplainScreen(myNavController)
