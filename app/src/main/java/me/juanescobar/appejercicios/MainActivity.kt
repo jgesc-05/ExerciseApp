@@ -14,12 +14,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.FirebaseApp
 import me.juanescobar.appejercicios.ui.theme.AppEjerciciosTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        FirebaseApp.initializeApp(this)
         setContent {
             AppEjerciciosTheme {
                 val myNavController = rememberNavController()
@@ -49,9 +51,12 @@ class MainActivity : ComponentActivity() {
                         ExerciseScreen(myNavController)
                     }
 
+
                     composable("sentadillaExplain") {
                         SentadillaExplainScreen(myNavController)
                     }
+
+
 
                     composable("sentadillaAi") {
                         SentadillaAiScreen(myNavController)

@@ -55,7 +55,7 @@ fun ZancadaExplainScreen(myNavController: NavController) {
         ) {
 
             IconButton(
-                onClick = {},  //poner onclick al final de la ejecución de navigation, luego de lograr integrar las pantallas
+                onClick = {myNavController.popBackStack()},
                 modifier = Modifier.size(40.dp)
             ) {
                 Icon(

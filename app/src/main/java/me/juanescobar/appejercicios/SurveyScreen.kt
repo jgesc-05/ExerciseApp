@@ -1,5 +1,6 @@
 package me.juanescobar.appejercicios
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,9 +24,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -39,6 +45,15 @@ import androidx.navigation.NavController
 
 @Composable
 fun SurveyScreen(myNavController: NavController) {
+
+    var nombre by remember { mutableStateOf("") }
+    var peso by remember { mutableStateOf("") }
+    var edad by remember { mutableStateOf("") }
+    var estatura by remember { mutableStateOf("") }
+
+    val context = LocalContext.current
+
+
     Scaffold { innerPadding ->
         Column(
             modifier = Modifier
@@ -50,15 +65,27 @@ fun SurveyScreen(myNavController: NavController) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Cuéntanos sobre tu salud",
+                text = "Cuéntanos un poco más de ti",
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp
             )
             Spacer(modifier = Modifier.height(32.dp))
 
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = nombre,
+                onValueChange = {nombre = it},
+                modifier = Modifier.fillMaxWidth(),
+                leadingIcon = { Icon(Icons.Filled.MonitorWeight, contentDescription = null) },
+                label = { Text(text = "Nombre completo (1 nombre y 1 apellido)") },
+                shape = RoundedCornerShape(12.dp),
+                singleLine = true
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            OutlinedTextField(
+                value = peso,
+                onValueChange = {peso = it},
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Filled.MonitorWeight, contentDescription = null) },
                 label = { Text(text = "Peso (kg)") },
@@ -69,8 +96,8 @@ fun SurveyScreen(myNavController: NavController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = edad,
+                onValueChange = {edad = it},
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Filled.Numbers, contentDescription = null) },
                 label = { Text(text = "Edad (años)") },
@@ -81,8 +108,8 @@ fun SurveyScreen(myNavController: NavController) {
             Spacer(modifier = Modifier.height(12.dp))
 
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = estatura,
+                onValueChange = {estatura = it},
                 modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Filled.Height, contentDescription = null) },
                 label = { Text(text = "Estatura (cm)") },
@@ -92,12 +119,20 @@ fun SurveyScreen(myNavController: NavController) {
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            //Aquí faltan los selectores de sexo y cantidad de ejercicio semanal (días); se dejará sin eso por el momento
+
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { myNavController.navigate("home") },
+                onClick = {
+                    val (nameValid, nameError) = validateName(nombre)
+                    if (!nameValid) {
+                        Toast.makeText(context, nameError, Toast.LENGTH_LONG).show()
+                        return@Button
+                    }
+                    saveUserDataSurvey(nombre, peso.toDoubleOrNull() ?: 0.0, edad.toIntOrNull() ?: 0, estatura.toIntOrNull() ?: 0)
+                    myNavController.navigate("home")
+                          },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),
