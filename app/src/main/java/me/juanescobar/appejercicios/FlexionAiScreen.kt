@@ -38,8 +38,7 @@ import com.google.mlkit.vision.common.PointF3D
 import com.google.mlkit.vision.pose.PoseDetection
 import com.google.mlkit.vision.pose.PoseLandmark
 import com.google.mlkit.vision.pose.accurate.AccuratePoseDetectorOptions
-import kotlin.math.acos
-import kotlin.math.hypot
+import me.juanescobar.appejercicios.exerciseCounter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -49,6 +48,12 @@ fun FlexionAiScreen(navController: NavController) {
     val imageUri = remember { mutableStateOf<Uri?>(null) }
     val feedback = remember { mutableStateOf("") }
     val resultadoAngulo = remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        exerciseCounter.exerciseCounter ++
+        storeExerciseCounter()
+        mostEnteredExercises("Flexión")
+    }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()

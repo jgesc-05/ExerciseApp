@@ -41,6 +41,7 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -63,10 +64,11 @@ import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.launch
 
 //Pagina principal del trabajo
-// Preview eliminado para navigation
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen2(myNavController: NavController) {
+
+    getExerciseCounter()
 
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -74,6 +76,38 @@ fun HomeScreen2(myNavController: NavController) {
     val auth: FirebaseAuth = Firebase.auth
     val currentUser = auth.currentUser
     var nombre by remember { mutableStateOf("") }
+    val exercises = exerciseCounter.exerciseCounter
+    var visitas by remember { mutableStateOf<Map<String, Long>>(emptyMap()) }
+
+    // Estado para almacenar los ejercicios más realizados
+    var topExercises by remember { mutableStateOf<List<Pair<String, Long>>>(emptyList()) }
+
+    // Cargar los ejercicios más realizados del usuario actual
+    LaunchedEffect(key1 = currentUser?.uid) {
+        if (currentUser != null) {
+            val userDocRef = db.collection("usuarios").document(currentUser.uid)
+
+            userDocRef.get()
+                .addOnSuccessListener { document ->
+                    if (document.exists()) {
+                        val exerciseFields = listOf("Flexión", "Press", "Sentadilla", "Zancada")
+
+                        val exerciseCounts = document.data?.filter { entry ->
+                            entry.key in exerciseFields && entry.value is Number
+                        } ?: emptyMap()
+
+                        val sortedExercises = exerciseCounts.entries
+                            .map { Pair(it.key, it.value.toString().toLongOrNull() ?: 0L) }
+                            .sortedByDescending { it.second }
+
+                        topExercises = sortedExercises
+                    }
+                }
+                .addOnFailureListener { e ->
+                    println("Error al cargar los ejercicios: ${e.message}")
+                }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -113,14 +147,14 @@ fun HomeScreen2(myNavController: NavController) {
                         modifier = Modifier.size(100.dp)
                     )
 
-                    LaunchedEffect(key1 = currentUser?.uid) { // Usamos el uid como clave para el LaunchedEffect
+                    LaunchedEffect(key1 = currentUser?.uid) {
                         if (currentUser != null) {
                             val nombreDocumentoRef = db.collection("usuarios").document(currentUser.uid)
 
                             nombreDocumentoRef.get()
                                 .addOnSuccessListener { documentSnapshot ->
                                     if (documentSnapshot.exists()) {
-                                        val nombreCompleto = documentSnapshot.getString("nombre") // Reemplaza "nombre" con el nombre real de tu campo
+                                        val nombreCompleto = documentSnapshot.getString("nombre")
                                         if (nombreCompleto != null) {
                                             nombre = nombreCompleto
                                         } else {
@@ -192,7 +226,7 @@ fun HomeScreen2(myNavController: NavController) {
                     label = { Text(text = "Perfil") },
                     selected = false,
                     onClick = {
-                        /*myNavController.navigate("profile")*/
+                        myNavController.navigate("profile")
                         scope.launch {
                             drawerState.close()
                         }
@@ -224,7 +258,6 @@ fun HomeScreen2(myNavController: NavController) {
                     horizontalArrangement = Arrangement.Start
                 ) {
                     //boton para desplegar el menu
-                    //temporalmente para ver la pantalla de ejercicios
                     IconButton(onClick = {scope.launch { drawerState.open() }}) {
                         Icon(
                             Icons.Default.Menu,
@@ -286,17 +319,18 @@ fun HomeScreen2(myNavController: NavController) {
                                 modifier = Modifier
                                     .matchParentSize(),
                                 onDraw = {
+                                    val sweepAngle = 360f * (exercises) / 7
                                     drawArc(
                                         Color.Green,
                                         -90f,
-                                        360f * 0.75f,
+                                        sweepAngle,
                                         false,
                                         style = androidx.compose.ui.graphics.drawscope.Stroke(width = 10f)
                                     )
                                 },
                             )
                             Text(
-                                text = "4/7",
+                                text = exercises.toString(),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
                             )
@@ -321,17 +355,18 @@ fun HomeScreen2(myNavController: NavController) {
                                 modifier = Modifier
                                     .matchParentSize(),
                                 onDraw = {
+                                    val sweepAngle = 360f * (exercises) / 14
                                     drawArc(
                                         Color.Red,
                                         -90f,
-                                        360f * 0.75f,
+                                        sweepAngle,
                                         false,
                                         style = androidx.compose.ui.graphics.drawscope.Stroke(width = 10f)
                                     )
                                 },
                             )
                             Text(
-                                text = "8/14",
+                                text = exercises.toString(),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
 
@@ -359,17 +394,18 @@ fun HomeScreen2(myNavController: NavController) {
                                 modifier = Modifier
                                     .matchParentSize(),
                                 onDraw = {
+                                    val sweepAngle = 360f * (exercises) / 30
                                     drawArc(
                                         Color.Cyan,
                                         -90f,
-                                        360f * 0.75f,
+                                        sweepAngle,
                                         false,
                                         style = androidx.compose.ui.graphics.drawscope.Stroke(width = 10f)
                                     )
                                 },
                             )
                             Text(
-                                text = "25/30",
+                                text = exercises.toString(),
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
 
@@ -408,59 +444,54 @@ fun HomeScreen2(myNavController: NavController) {
                     )
                 }
 
-                //Modificación de los tamaños de elementos
-
+                // Lista dinámica de ejercicios más realizados
                 Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    //Texto de ejemplo por el momento
-                    Text(
-                        "Sentadilla-1",
-                        fontSize = 15.sp,
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .fillMaxWidth()
-                            .background(Color.LightGray)
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    //Texto de ejemplo por el momento
-                    Text(
-                        "Sentadilla-1",
-                        fontSize = 15.sp,
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Box(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .fillMaxWidth()
-                            .background(Color.LightGray)
-                    )
-                    Spacer(modifier = Modifier.height(20.dp))
-                    //Texto de ejemplo por el momento
-                    Text(
-                        "Sentadilla-1",
-                        fontSize = 15.sp,
-                        modifier = Modifier.padding(start = 25.dp)
-                    )
-
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .fillMaxWidth()
-                            .background(Color.LightGray)
-                    )
-
-
+                    if (topExercises.isEmpty()) {
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            "No hay ejercicios registrados",
+                            fontSize = 15.sp,
+                            modifier = Modifier.padding(start = 25.dp)
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Box(
+                            modifier = Modifier
+                                .height(1.dp)
+                                .fillMaxWidth()
+                                .background(Color.LightGray)
+                        )
+                    } else {
+                        // Mostrar hasta 3 ejercicios más realizados
+                        topExercises.take(3).forEachIndexed { index, (exerciseName, count) ->
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    text = exerciseName,
+                                    fontSize = 15.sp,
+                                    modifier = Modifier.padding(start = 25.dp)
+                                )
+                                Text(
+                                    text = "$count veces",
+                                    fontSize = 15.sp,
+                                    modifier = Modifier.padding(end = 25.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(20.dp))
+                            Box(
+                                modifier = Modifier
+                                    .height(1.dp)
+                                    .fillMaxWidth()
+                                    .background(Color.LightGray)
+                            )
+                        }
+                    }
                 }
+
                 Spacer(modifier = Modifier.height(30.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),

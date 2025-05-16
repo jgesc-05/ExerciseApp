@@ -178,7 +178,7 @@ fun ExerciseScreen(myNavController: NavController) {
                         label = { Text(text = "Perfil") },
                         selected = false,
                         onClick = {
-                            /*myNavController.navigate("profile")*/
+                            myNavController.navigate("profile")
                             scope.launch {
                                 drawerState.close()
                             }
@@ -330,7 +330,7 @@ fun ExerciseScreen(myNavController: NavController) {
                                     "Zancadas" -> myNavController.navigate("zancadaExplain")
                                     "Flexiones" -> myNavController.navigate("flexionExplain")
                                     "Press de pecho" -> myNavController.navigate("pressExplain")
-                                    else -> {} // Manejo por defecto si quieres
+                                    else -> {}
                                 }
                             }
                             .padding(vertical = 12.dp)

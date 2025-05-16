@@ -50,6 +50,12 @@ fun ZancadaAiScreen(navController: NavController) {
     val feedback = remember { mutableStateOf("") }
     val resultadoAngulo = remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        exerciseCounter.exerciseCounter ++
+        storeExerciseCounter()
+        mostEnteredExercises("Zancada")
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->

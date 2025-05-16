@@ -47,6 +47,10 @@ class MainActivity : ComponentActivity() {
                         HomeScreen2(myNavController)
                     }
 
+                    composable("profile") {
+                        ProfileScreen(myNavController)
+                    }
+
                     composable("exercisesList") {
                         ExerciseScreen(myNavController)
                     }

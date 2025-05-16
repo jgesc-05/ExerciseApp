@@ -50,6 +50,12 @@ fun SentadillaAiScreen(navController: NavController) {
     val feedback = remember { mutableStateOf("") }
     val resultadoAngulo = remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        exerciseCounter.exerciseCounter ++
+        storeExerciseCounter()
+        mostEnteredExercises("Sentadilla")
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri: Uri? ->
