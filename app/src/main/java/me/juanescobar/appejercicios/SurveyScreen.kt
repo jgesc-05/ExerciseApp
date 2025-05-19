@@ -7,9 +7,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.FitnessCenter
@@ -39,10 +42,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-
-//FALTANTE: INTEGRACIÓN DE FIREBASE Y BY REMEMBER PARA LOS CAMPOS DE TEXTO, ADEMAS DE LO MENCIONADO ABAJO
-
-
 @Composable
 fun SurveyScreen(myNavController: NavController) {
 
@@ -59,6 +58,8 @@ fun SurveyScreen(myNavController: NavController) {
             modifier = Modifier
                 .padding(innerPadding)
                 .fillMaxSize()
+                .imePadding()
+                .verticalScroll(rememberScrollState(    ))
                 .fillMaxSize()
                 .padding(horizontal = 30.dp),
             horizontalAlignment = Alignment.Start,
@@ -132,7 +133,7 @@ fun SurveyScreen(myNavController: NavController) {
                     }
                     saveUserDataSurvey(nombre, peso.toDoubleOrNull() ?: 0.0, edad.toIntOrNull() ?: 0, estatura.toIntOrNull() ?: 0)
                     myNavController.navigate("home")
-                          },
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp),

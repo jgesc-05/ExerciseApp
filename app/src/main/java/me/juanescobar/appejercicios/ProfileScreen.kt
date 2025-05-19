@@ -1,5 +1,7 @@
 package me.juanescobar.appejercicios
 
+import android.app.Activity
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,9 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Menu
@@ -54,12 +58,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.modifier.ModifierLocalReadScope
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlin.js.ExperimentalJsFileName
@@ -77,6 +84,9 @@ fun ProfileScreen( myNavController: NavController) {
     var weight by remember { mutableStateOf("") }
     var age by remember { mutableStateOf("") }
     var info by remember { mutableStateOf("") }
+
+    val auth: FirebaseAuth = Firebase.auth
+    val activity = LocalView.current.context as Activity
 
 
 
@@ -178,6 +188,27 @@ fun ProfileScreen( myNavController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Perfil"
+                        )
+                    },
+                    modifier = Modifier
+                        .padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                NavigationDrawerItem(
+                    label = { Text(text = "Cerrar sesión") },
+                    selected = false,
+                    onClick = {
+                        auth.signOut()
+                        myNavController.navigate("login"){
+                            popUpTo(0)
+                        }
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Exit"
                         )
                     },
                     modifier = Modifier
@@ -314,6 +345,8 @@ fun ProfileScreen( myNavController: NavController) {
                 Button(
                     onClick = {
                         updateUserData(name, weight.toDoubleOrNull() ?: 0.0 , age.toIntOrNull() ?: 0, info)
+
+                        Toast.makeText(activity.applicationContext, "Información de perfil actualizada", Toast.LENGTH_LONG).show()
                     },
                     modifier = Modifier
                         .size(300.dp,50.dp)

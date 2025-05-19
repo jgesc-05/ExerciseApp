@@ -14,7 +14,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.firebase.Firebase
 import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.auth
 import me.juanescobar.appejercicios.ui.theme.AppEjerciciosTheme
 
 class MainActivity : ComponentActivity() {
@@ -25,7 +27,19 @@ class MainActivity : ComponentActivity() {
         setContent {
             AppEjerciciosTheme {
                 val myNavController = rememberNavController()
-                val myStartDestination = "login"
+                var myStartDestination = "login"
+
+                val auth = Firebase.auth
+                val currentUser= auth.currentUser
+
+                if (currentUser !=null)
+                {
+                    myStartDestination="home"
+                }
+                else
+                {
+                    myStartDestination="login"
+                }
 
                 NavHost(
                     navController = myNavController,
@@ -83,19 +97,19 @@ class MainActivity : ComponentActivity() {
 
                     composable("pressAi") {
                         PressAiScreen(myNavController)
-                     }
+                    }
 
-
-
-
-                     composable("zancadaExplain") {
+                    composable("zancadaExplain") {
                         ZancadaExplainScreen(myNavController)
 
-                      }
+                    }
 
-                      composable("zancadaAi") {
+                    composable("zancadaAi") {
                         ZancadaAiScreen(myNavController)
-                      }
+                    }
+
+
+
 
 
 

@@ -17,8 +17,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.FormatListNumberedRtl
 import androidx.compose.material.icons.filled.Home
@@ -77,7 +79,7 @@ fun HomeScreen2(myNavController: NavController) {
     val currentUser = auth.currentUser
     var nombre by remember { mutableStateOf("") }
     val exercises = exerciseCounter.exerciseCounter
-    var visitas by remember { mutableStateOf<Map<String, Long>>(emptyMap()) }
+
 
     // Estado para almacenar los ejercicios más realizados
     var topExercises by remember { mutableStateOf<List<Pair<String, Long>>>(emptyList()) }
@@ -235,6 +237,28 @@ fun HomeScreen2(myNavController: NavController) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Perfil"
+                        )
+                    },
+                    modifier = Modifier
+                        .padding(NavigationDrawerItemDefaults.ItemPadding)
+                )
+                // Cuarto NavigationDrawerItem
+                NavigationDrawerItem(
+                    label = { Text(text = "Cerrar sesión") },
+                    selected = false,
+                    onClick = {
+                        auth.signOut()
+                        myNavController.navigate("login"){
+                            popUpTo(0)
+                        }
+                        scope.launch {
+                            drawerState.close()
+                        }
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.ExitToApp,
+                            contentDescription = "Exit"
                         )
                     },
                     modifier = Modifier
