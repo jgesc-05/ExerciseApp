@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +61,7 @@ fun RegisterScreen(myNavController : NavController) {
     var inputRepeatPassword by remember { mutableStateOf("") }
 
     //Estado name
-    var inputName by remember { mutableStateOf("") }
+
 
     val activity = LocalView.current.context as Activity
 
@@ -104,17 +105,6 @@ fun RegisterScreen(myNavController : NavController) {
                 singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
-            OutlinedTextField(
-                value = inputName,
-                onValueChange = {inputName = it},
-                modifier = Modifier.fillMaxWidth(),
-                leadingIcon = { Icon(Icons.Default.Person, contentDescription = null) },
-                label = { Text(text = "Nombre Completo") },
-                shape = RoundedCornerShape(12.dp),
-                singleLine = true
-            )
-
 
             Spacer(modifier = Modifier.height(12.dp))
 
@@ -151,14 +141,13 @@ fun RegisterScreen(myNavController : NavController) {
                     // Validaciones
                     val (emailValid, emailError) = validateEmail(inputEmail)
                     val (passValid, passError) = validatePassword(inputPassword)
-                    val (nameValid, nameError) = validateName(inputName)
 
 
 
                     val repeatPassError = if (inputPassword != inputRepeatPassword) "Las contraseñas no coinciden" else ""
 
-                    if (!emailValid || !passValid || nameError.isNotEmpty() || repeatPassError.isNotEmpty()) {
-                        val firstError = listOf(nameError, emailError, passError, repeatPassError)
+                    if (!emailValid || !passValid || repeatPassError.isNotEmpty()) {
+                        val firstError = listOf(emailError, passError, repeatPassError)
                             .firstOrNull { it.isNotEmpty() } ?: "Error desconocido"
 
                         Toast.makeText(activity.applicationContext, firstError, Toast.LENGTH_LONG).show()
@@ -176,7 +165,8 @@ fun RegisterScreen(myNavController : NavController) {
                             if (task.isSuccessful) {
                                 // Mostrar mensaje y navegar a la pantalla "survey"
                                 Toast.makeText(activity.applicationContext, "Usuario registrado correctamente", Toast.LENGTH_LONG).show()
-                                myNavController.navigate("survey") // Navegación a la pantalla de encuesta
+                                myNavController.navigate("survey")
+// Navegación a la pantalla de encuesta
                             } else {
                                 Toast.makeText(activity.applicationContext, "Error al registrar: ${task.exception?.localizedMessage}", Toast.LENGTH_LONG).show()
                             }
