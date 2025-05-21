@@ -1,6 +1,7 @@
 package me.juanescobar.appejercicios
 
 import android.R.attr.strokeWidth
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -83,6 +84,8 @@ fun HomeScreen2(myNavController: NavController) {
 
     // Estado para almacenar los ejercicios más realizados
     var topExercises by remember { mutableStateOf<List<Pair<String, Long>>>(emptyList()) }
+    var listaUsuarios by remember { mutableStateOf<List<String>>(emptyList()) }
+
 
     // Cargar los ejercicios más realizados del usuario actual
     LaunchedEffect(key1 = currentUser?.uid) {
@@ -109,6 +112,23 @@ fun HomeScreen2(myNavController: NavController) {
                     println("Error al cargar los ejercicios: ${e.message}")
                 }
         }
+        // Obtener los nombres de los demás usuarios
+        db.collection("usuarios")
+            .get()
+            .addOnSuccessListener { result ->
+                val nombres = result.documents
+                    .filter { it.id != currentUser?.uid }
+                    .mapNotNull {val nombreUsuario = it.getString("nombre")
+                    Log.d("USUARIO_FIRESTORE", nombreUsuario.toString())
+                    nombreUsuario
+                    }
+
+                listaUsuarios = nombres
+            }
+            .addOnFailureListener { e ->
+                println("Error al obtener usuarios: ${e.message}")
+            }
+
     }
 
     ModalNavigationDrawer(
@@ -142,12 +162,6 @@ fun HomeScreen2(myNavController: NavController) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    // Aquí puedes poner la foto de perfil si es necesario
-                    Icon(
-                        Icons.Default.Circle,
-                        contentDescription = null,
-                        modifier = Modifier.size(100.dp)
-                    )
 
                     LaunchedEffect(key1 = currentUser?.uid) {
                         if (currentUser != null) {
@@ -549,106 +563,37 @@ fun HomeScreen2(myNavController: NavController) {
 
                 Spacer(modifier = Modifier.height(10.dp))
 
-                Column() {
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        //Circulo representa a una pantalla de usuario
-                        Icon(
-                            Icons.Default.Circle,
-                            contentDescription = null,
-                            modifier = Modifier.padding(
-                                end = 10.dp
+                Column {
+                    listaUsuarios.take(3).forEach {  nombre ->
+                        Row(modifier = Modifier.fillMaxWidth()) {
+
+                            Text(
+                                text = nombre,
+                                modifier = Modifier.padding(top = 10.dp),
+                                fontSize = 25.sp
                             )
-                                .size(60.dp)
-                        )
-                        Text(
-                            "A. Lovelace",
-                            modifier = Modifier.padding(top = 10.dp),
-                            fontSize = 25.sp
-                        )
-                        Icon(
-                            Icons.Default.FitnessCenter,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(30.dp)
-                                .padding(top = 15.dp)
-                        )
-
-                    }
-                    Box(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .fillMaxWidth()
-                            .background(Color.LightGray)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    //Modificación de los elementos
-
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        //Circulo representa a una pantalla de usuario
-                        Icon(
-                            Icons.Default.Circle,
-                            contentDescription = null,
-                            modifier = Modifier.padding(
-                                end = 10.dp
+                            repeat(5){
+                            Icon(
+                                Icons.Default.FitnessCenter,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(30.dp)
+                                    .padding(top = 15.dp)
                             )
-                                .size(60.dp)
-                        )
-                        Text(
-                            "F. Afanador",
-                            modifier = Modifier.padding(top = 10.dp),
-                            fontSize = 25.sp
-                        )
-                        Icon(
-                            Icons.Default.FitnessCenter,
-                            contentDescription = null,
+                            }
+                        }
+
+                        Box(
                             modifier = Modifier
-                                .size(30.dp)
-                                .padding(top = 15.dp)
+                                .height(1.dp)
+                                .fillMaxWidth()
+                                .background(Color.LightGray)
                         )
 
+                        Spacer(modifier = Modifier.height(10.dp))
                     }
-                    Box(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .fillMaxWidth()
-                            .background(Color.LightGray)
-                    )
-
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        //Circulo representa a una pantalla de usuario
-                        Icon(
-                            Icons.Default.Circle,
-                            contentDescription = null,
-                            modifier = Modifier.padding(
-                                end = 10.dp
-                            )
-                                .size(60.dp)
-                        )
-                        Text(
-                            "S. Afanador",
-                            modifier = Modifier.padding(top = 10.dp),
-                            fontSize = 25.sp
-                        )
-                        Icon(
-                            Icons.Default.FitnessCenter,
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(30.dp)
-                                .padding(top = 15.dp)
-                        )
-
-                    }
-                    Box(
-                        modifier = Modifier
-                            .height(1.dp)
-                            .fillMaxWidth()
-                            .background(Color.LightGray)
-                    )
                 }
+
             }
         }
     }

@@ -94,12 +94,6 @@ fun ExerciseScreen(myNavController: NavController) {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        // Aquí puedes poner la foto de perfil si es necesario
-                        Icon(
-                            Icons.Default.Circle,
-                            contentDescription = null,
-                            modifier = Modifier.size(100.dp)
-                        )
 
                         LaunchedEffect(key1 = currentUser?.uid) { // Usamos el uid como clave para el LaunchedEffect
                             if (currentUser != null) {

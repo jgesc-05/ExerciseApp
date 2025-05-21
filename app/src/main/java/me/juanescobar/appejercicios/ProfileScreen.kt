@@ -45,6 +45,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
@@ -87,6 +88,9 @@ fun ProfileScreen( myNavController: NavController) {
 
     val auth: FirebaseAuth = Firebase.auth
     val activity = LocalView.current.context as Activity
+    val currentUser = auth.currentUser
+    val db = FirebaseFirestore.getInstance()
+    var nombre by remember { mutableStateOf("") }
 
 
 
@@ -121,20 +125,39 @@ fun ProfileScreen( myNavController: NavController) {
                     verticalArrangement = Arrangement.Center
                 )
                 {
-                    //Poner lo de la foto de perfil que es con el firebase
-                    Icon(
-                        Icons.Default.Circle,
-                        contentDescription = null,
-                        modifier = Modifier.size(100.dp)
-
-                    )
 
 
-                    //Cambiar por el nombre del usuario en firebase
+                    LaunchedEffect(key1 = currentUser?.uid) {
+                        if (currentUser != null) {
+                            val nombreDocumentoRef =
+                                db.collection("usuarios").document(currentUser.uid)
+
+                            nombreDocumentoRef.get()
+                                .addOnSuccessListener { documentSnapshot ->
+                                    if (documentSnapshot.exists()) {
+                                        val nombreCompleto = documentSnapshot.getString("nombre")
+                                        if (nombreCompleto != null) {
+                                            nombre = nombreCompleto
+                                        } else {
+                                            nombre = "Nombre no encontrado"
+                                        }
+                                    } else {
+                                        nombre = "Documento no encontrado"
+                                    }
+                                }
+                                .addOnFailureListener { e ->
+                                    nombre = "Error al cargar el nombre: ${e.message}"
+                                }
+                        } else {
+                            nombre = "Usuario no autenticado"
+                        }
+                    }
+
                     Text(
-                        "Nombre de usuario",
+                        text = nombre,
                         fontWeight = FontWeight.Bold
                     )
+
                 }
 
                 Spacer(modifier = Modifier.padding(top = 23.dp))
@@ -252,31 +275,6 @@ fun ProfileScreen( myNavController: NavController) {
                     .padding(innerPadding),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Box(contentAlignment = Alignment.BottomEnd) {
-                    //icono representa la foto de perfil del usuario
-                    Icon(
-                        Icons.Default.Circle,
-                        contentDescription = null,
-                        modifier = Modifier.padding(
-                            end = 10.dp
-                        )
-                            .size(120.dp)
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit",
-                        tint = Color.Red,
-                        modifier = Modifier
-                            .offset(x = (-8).dp, y = (-8).dp)
-                            .background(Color.White, shape = CircleShape)
-                            .padding(4.dp)
-                            .size(30.dp)
-                    )
-
-                }
 
                 Spacer(modifier = Modifier.height(20.dp))
 
